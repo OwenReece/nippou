@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 import django.contrib.auth as auth
@@ -12,13 +13,14 @@ def index(request):
 
 
 def login(request):
+    user_home = redirect("/nippou/document/")
 
     def _get():
         if request.user.is_authenticated():
             if "next" in request.GET:
                 return redirect(request.GET["next"])
             else:
-                return list_view(request)
+                return user_home
         else:
             return render(request, "registration/login.html", {"message": ""})
 
@@ -40,7 +42,7 @@ def login(request):
 
         if user and user.is_active:
             auth.login(request, user)
-            return redirect("/nippou/list/")
+            return user_home
         else:
             raise Exception("アクティブなユーザーではありません")
 
@@ -58,5 +60,18 @@ def logout(request):
     return index(request)
 
 @login_required()
-def list_view(request):
-    return render(request, "nippou_app/list.html")
+def viewer(request):
+    if request.method == "GET":
+        nippous = models.Nippou.objects.all()
+        return render(request, "nippou_app/viewer.html", {"nippous": nippous})
+    else:
+        today = datetime.now().strftime("%Y/%m/%d")
+        username = request.user.username
+        n = models.Nippou(title=today, body="", owner=username)
+        n.save()
+        return redirect("/nippou/document/{0}/".format(n.id))
+
+@login_required()
+def editor(request, nippou_id):
+    nippou = models.Nippou.objects.get(pk=nippou_id)
+    return render(request, "nippou_app/editor.html", {"nippou": nippou})
