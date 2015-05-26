@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-Hellow
-</body>
-</html>
+{% extends "nippou_app/base.html" %}
+
+{% block headerscript %}{% endblock %}
+
+{% block nav %}
+    {% include "nippou_app/includes/nav_index.html" %}
+{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+<div class="jumbotron">
+    <h1>Nippon no Nippou</h1>
+    <p style="text-align:center;padding-top:30px;padding-bottom:50px">
+        <a class="btn btn-lg btn-primary" href="/nippou/registration/login" role="button" style="font-size:20px; width: 250px">Sign in</a>
+    </p>
+    <div class="row">
+        <div id="description" class="col-md-5">
+            <p class="lead">
+                Nippon no Nippouは、日報を書くのが楽しみになるサービスです。<br/>
+                使い勝手の悪いシステムで、書くこと自体が嫌になってしまってはいませんか？<br/>
+                本サービスでは第一に書きやすさについて、さらに書きたくなるような様々な仕掛けが随所に凝らされています。
+            </p>
+        </div>
+        <div id="feature" class="col-md-7">
+            <img src="{% static 'nippou_app/images/top.jpg' %}" class="img-responsive img-rounded" style="margin-left: auto;"/>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>© Company 2015</p>
+</footer>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

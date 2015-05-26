@@ -1,0 +1,61 @@
+{% extends "nippou_app/base.html" %}
+
+{% block headerscript %}
+<style>
+    #signup:hover{
+        background-color:lemonchiffon;
+    }
+</style>
+<script>
+    $(function(){
+        $("#signup").click(function(){
+            $("#signup_params").fadeToggle("slow");
+            var value = $("#is_signup").val();
+            if(value == "0"){
+                $("#is_signup").val("1");
+            }else{
+                $("#is_signup").val("0");
+            }
+        })
+    })
+</script>
+{% endblock %}
+
+{% block nav %}
+    {% include "nippou_app/includes/nav_index.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div id="signup" style="border:1px solid #93c54b; padding:10px; margin:5px;;text-align:center;border-radius:10px;">
+    新規登録を行う方はこちら
+</div>
+<br/>
+<form method="post" action="{% url 'nippou_app.views.login' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="email">メールアドレス</label>
+        <input type="email" class="form-control" id="email" name="email">
+    </div>
+    <div class="form-group">
+        <label for="password">パスワード</label>
+        <input type="password" class="form-control" id="password" name="password">
+    </div>
+    <hr/>
+    <div id="signup_params" style="display:none">
+        <div class="form-group">
+            <label for="password_confirm">パスワード(確認)</label>
+            <input type="password" class="form-control" id="password_confirm" name="password_confirm">
+        </div>
+        <input id="is_signup" type="hidden" value="0" name="is_signup">
+    </div>
+    <br/>
+    <button id="submit" type="submit" class="btn btn-primary">Login</button>
+</form>
+
+{% if message %}
+    {{ message }}
+{% endif %}
+
+{% endblock %}
