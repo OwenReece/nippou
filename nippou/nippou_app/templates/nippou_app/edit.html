@@ -1,0 +1,48 @@
+{% extends "nippou_app/base.html" %}
+
+{% block headerscript %}
+<script>
+    var RESIZEING = null;
+    var setHeight = function(){
+        var height = $(window).height() - 270;
+        console.log($(window).height() + "/" + height);
+        $("#body").height(height);
+    }
+    $(function(){
+        $(window).resize(function(){
+            clearTimeout(RESIZEING);
+            RESIZEING = setTimeout(setHeight, 100);
+        })
+        setHeight();
+    })
+</script>
+{% endblock %}
+
+{% block nav %}
+    {% include "nippou_app/includes/nav_editor.html" %}
+{% endblock %}
+
+{% block content %}
+<form method="post" action="{% url 'nippou_app.views.edit' nippou.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <input id="title" name="title" type="text" class="form-control" value="{{ nippou.title }}">
+    </div>
+    <div class="form-group">
+        <textarea id="body" name="body" class="form-control">{{ nippou.body }}</textarea>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-10">
+            {% if message %}
+                <span>{{ message }}</span>
+            {% endif %}
+        </div>
+        <div class="col-md-2" style="text-align: right;">
+            <button class="btn btn-primary" type="submit">Update</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

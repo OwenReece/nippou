@@ -1,0 +1,46 @@
+{% extends "nippou_app/base.html" %}
+
+{% block headerscript %}
+<script>
+    var LOGIN_USER = "{{ user.username }}";
+    $(function(){
+        $("#user-filter").click(function(){
+            $(".nippou").each(function(){
+                if($(this).data("owner") != LOGIN_USER){
+                    $(this).fadeToggle();
+                }
+            })
+        })
+    })
+</script>
+{% endblock %}
+
+{% block nav %}
+    {% include "nippou_app/includes/nav_editor.html" %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'nippou_app.views.view' %}">
+        <button class="btn btn-primary func-button" type="submit" title="create nippou" data-placement="right">
+            <i class="fa fa-plus"></i>
+        </button>
+        <button id="user-filter" class="btn btn-default" type="button">
+            Filter
+        </button>
+        {% csrf_token %}
+    </form>
+    <hr/>
+    {% if nippous %}
+        {% for n in nippous %}
+            <div class="nippou" data-owner="{{ n.owner }}">
+                <h3 ><a href="/nippou/document/{{ n.id }}/" target="_blank">{{ n.title }}</a></h3>
+                <span>{{ n.owner }} </span>&nbsp;&nbsp;&nbsp;<span>{{ n.created_at | date:"Y/m/d H:i:s" }}</span>
+            </div>
+        {% endfor %}
+    {% else %}
+        日報はまだ一件もありません。さっそく作成しましょう！
+    {% endif %}
+
+{% endblock %}
+
+{% block bodyscript %}{% endblock %}

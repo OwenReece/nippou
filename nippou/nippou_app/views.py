@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 import django.contrib.auth as auth
 from django.contrib.auth.decorators import login_required
+from django.forms import ModelForm
 from . import models
 
 
@@ -60,18 +61,56 @@ def logout(request):
     return index(request)
 
 @login_required()
-def viewer(request):
+def view(request):
     if request.method == "GET":
-        nippous = models.Nippou.objects.all()
-        return render(request, "nippou_app/viewer.html", {"nippous": nippous})
+        nippous = models.Nippou.objects.all().order_by("-created_at")
+        return render(request, "nippou_app/view.html", {"nippous": nippous})
     else:
         today = datetime.now().strftime("%Y/%m/%d")
         username = request.user.username
         n = models.Nippou(title=today, body="", owner=username)
         n.save()
-        return redirect("/nippou/document/{0}/".format(n.id))
+        return redirect("/nippou/document/{0}/edit".format(n.id))
+
 
 @login_required()
-def editor(request, nippou_id):
+def detail(request, nippou_id):
     nippou = models.Nippou.objects.get(pk=nippou_id)
-    return render(request, "nippou_app/editor.html", {"nippou": nippou})
+    is_own = (nippou.owner == request.user.username)
+    return render(request, "nippou_app/detail.html", {"nippou": nippou, "is_own": is_own})
+
+
+@login_required()
+def edit(request, nippou_id):
+    nippou = models.Nippou.objects.get(pk=nippou_id)
+    is_own = (nippou.owner == request.user.username)
+    show_nippou = lambda r, m="":  render(r, "nippou_app/edit.html", {"nippou": nippou, "is_own": is_own, "message": m})
+
+    if not is_own:
+        return redirect("/nippou/document/{0}/".format(nippou.id))
+
+    if request.method == "GET":
+        return show_nippou(request)
+    elif request.method == "POST":
+        class NippouForm(ModelForm):
+            class Meta:
+                model = models.Nippou
+                fields = ["title", "body"]
+
+        f = NippouForm(request.POST, instance=nippou)
+        if f.is_valid():
+            f.save()
+            return redirect("/nippou/document/{0}/".format(nippou.id))
+        else:
+            return show_nippou(request, "入力内容に誤りがあります")
+
+@login_required()
+def delete(request, nippou_id):
+    nippou = models.Nippou.objects.get(pk=nippou_id)
+    is_own = (nippou.owner == request.user.username)
+
+    if not is_own:
+        return redirect("/nippou/document/{0}/".format(nippou.id))
+
+    nippou.delete()
+    return redirect("/nippou/document/")
