@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +25,7 @@ SECRET_KEY = 'wb!1ga#5z54c%g!#)s3(rv$9kjc%zh%9t@msbn7bo84^@jp$pu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -75,32 +75,33 @@ WSGI_APPLICATION = 'nippou.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 import json
-import urllib.parse
 from collections import namedtuple
 DatabaseConfig = namedtuple("DatabaseConfig", ["name", "user", "password", "host", "port"])
-db_config = None
 db_config_path = os.path.join(os.path.dirname(__file__), "database.json")
 
 if "DATABASE_URL" in os.environ:
-    url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
-    db_config = DatabaseConfig(url.path[1:], url.username, url.password, url.hostname, url.port)
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
 elif os.path.isfile(db_config_path):
     with open(db_config_path) as db_config_file:
         config = json.load(db_config_file)
         db_config = DatabaseConfig(**config)
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': db_config.name,
+                'USER': db_config.user,
+                'PASSWORD': db_config.password,
+                'HOST': db_config.host,
+                'PORT': db_config.port
+            }
+        }
+
 else:
     raise Exception("Database setting is not defined. please confirm database.json or DATABASE_URL env variable")
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': db_config.name,
-        'USER': db_config.user,
-        'PASSWORD': db_config.password,
-        'HOST': db_config.host,
-        'PORT': db_config.port
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -118,6 +119,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 LOGIN_URL = '/nippou/registration/login'
+
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
