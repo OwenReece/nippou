@@ -33,7 +33,7 @@
     {% if nippous %}
         {% for n in nippous %}
             <div class="nippou" data-owner="{{ n.owner }}">
-                <h3 ><a href="/nippou/document/{{ n.id }}/" target="_blank">{{ n.title }}</a></h3>
+                <h3 ><a href="/nippou/document/{{ n.id }}/" >{{ n.title }}</a></h3>
                 <span>{{ n.owner }} </span>&nbsp;&nbsp;&nbsp;<span>{{ n.created_at | date:"Y/m/d H:i:s" }}</span>
             </div>
         {% endfor %}

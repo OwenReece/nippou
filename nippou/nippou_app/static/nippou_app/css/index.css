@@ -45,3 +45,8 @@ hr {
     padding-left: 18px;
     padding-right: 18px;
 }
+
+.show-body {
+    padding: 18px;
+    border: 1px solid silver;
+}

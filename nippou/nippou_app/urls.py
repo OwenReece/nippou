@@ -10,3 +10,4 @@ urlpatterns = [
     url('^registration/login', views.login, name="login"),
     url('^registration/logout', views.logout, name="logout"),
 ]
+

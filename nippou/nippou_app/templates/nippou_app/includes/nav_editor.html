@@ -2,13 +2,12 @@
 <div class="header clearfix">
     <nav>
         <ul class="nav nav-pills pull-right">
-            <li role="presentation"><a href="{% url 'nippou_app.views.view' %}">List</a></li>
             {% if nippou and is_own %}
-                <li role="presentation"><a href="{% url 'nippou_app.views.delete' nippou.id %}" style="color:#d9534f;">Delete</a></li>
+                <li role="presentation"><a href="{% url 'nippou_app.views.delete' nippou.id %}" onClick="if(!confirm('Delete This Nippou?')) return false" style="color:#d9534f;">Delete</a></li>
             {% endif %}
             <li role="presentation"><a href="{% url 'nippou_app.views.logout' %}">Logout</a></li>
         </ul>
     </nav>
-    <a href="/nippou/" class="text-muted">Nippon no Nippou</a>
+    <a href="{% url 'nippou_app.views.view' %}" class="text-muted">Nippon no Nippou</a>
 </div>
 {% endblock %}
