@@ -1,1 +1,1 @@
-web: gunicorn_django -b 0.0.0.0:$PORT nippou/nippou/settings.py
+web: gunicorn --env DJANGO_SETTINGS_MODULE=nippou.settings nippou.wsgi --log-file -
