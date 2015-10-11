@@ -1,0 +1,14 @@
+{
+  "name": "Nippon no Nippou",
+  "description": "Simple daily report application",
+  "repository": "https://github.com/icoxfog417/nippou",
+  "keywords": ["python", "Django"],
+  "env": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "scripts": {
+    "postdeploy": "python manage.py migrate"
+  }
+}

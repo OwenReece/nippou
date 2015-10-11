@@ -1,5 +1,7 @@
-# Nippou no Nippou
-Nippou no Nippouは、日本ならではの心遣いにより快適に日報を書くことができるサービスです。
+# Nippon no Nippou
+Nippon no Nippouは、日本ならではの心遣いにより快適に日報を書くことができるサービスです。
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 # Running Environment
 
